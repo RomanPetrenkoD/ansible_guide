@@ -1,0 +1,11 @@
+#ping pong
+ansible -i hosts.txt all -m ping
+
+
+#adding windows-server client to ansible master
+First thinkgs, we need to type next command to console to add library "winrm"
+	sudo pip install "pywinrm>=0.2.2"
+addres the script for windows host 
+https://github.com/ansible/ansible/blob/devel/examples/scripts/ConfigureRemotingForAnsible.ps1
+
+ 
