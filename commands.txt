@@ -8,4 +8,131 @@ First thinkgs, we need to type next command to console to add library "winrm"
 addres the script for windows host 
 https://github.com/ansible/ansible/blob/devel/examples/scripts/ConfigureRemotingForAnsible.ps1
 
+#check list with hosts and vars
+ansible-inventory --list
+ansible-inventory --graph
+
+#get all information about host
+ansible <name_of_host> -m setup
+
+#execute command on server
+ansible <name_of_server> -m shell -a "uptime"
+
+ubuntu1-1804@ansible_host:~/ansible$ ansible all_servers -m shell -a "uptime"
+82.118.17.246 | CHANGED | rc=0 >>
+ 21:00:52 up 11 days,  9:38,  1 user,  load average: 0,00, 0,01, 0,05
+
+82.118.17.245 | CHANGED | rc=0 >>
+ 21:00:52 up 11 days,  9:38,  1 user,  load average: 0,00, 0,01, 0,05
+
+82.118.17.249 | CHANGED | rc=0 >>
+ 21:00:52 up 11 days,  9:38,  1 user,  load average: 0,00, 0,01, 0,05
+
+#copy file from master to all hosts
+ansible all -m copy -a "src=<path to file> dest=<plase to copy>" -b(sudo access) 
  
+ubuntu1-1804@ansible_host:~/ansible$ ansible all_servers -m copy -a "src=hello.txt dest=/tmp mode=777"
+jenkins_host | CHANGED => {
+    "changed": true,
+    "checksum": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "dest": "/tmp/hello.txt",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "d41d8cd98f00b204e9800998ecf8427e",
+    "mode": "0777",
+    "owner": "root",
+    "size": 0,
+    "src": "/root/.ansible/tmp/ansible-tmp-1553284804.5-212682403514497/source",
+    "state": "file",
+    "uid": 0
+}
+dev_host | CHANGED => {
+    "changed": true,
+    "checksum": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "dest": "/tmp/hello.txt",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "d41d8cd98f00b204e9800998ecf8427e",
+    "mode": "0777",
+    "owner": "root",
+    "size": 0,
+    "src": "/root/.ansible/tmp/ansible-tmp-1553284804.51-38416529873976/source",
+    "state": "file",
+    "uid": 0
+}
+prod_host | CHANGED => {
+    "changed": true,
+    "checksum": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "dest": "/tmp/hello.txt",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "d41d8cd98f00b204e9800998ecf8427e",
+    "mode": "0777",
+    "owner": "root",
+    "size": 0,
+    "src": "/root/.ansible/tmp/ansible-tmp-1553284804.53-146810538499352/source",
+    "state": "file",
+    "uid": 0
+}
+
+#delete file on all host
+ansible all_servers -m file -a "path=/tmp/hello.txt state=absent" -b
+ubuntu1-1804@ansible_host:~/ansible$ ansible all_servers -m file -a "path=/tmp/hello.txt state=absent" -b
+dev_host | CHANGED => {
+    "changed": true,
+    "path": "/tmp/hello.txt",
+    "state": "absent"
+}
+prod_host | CHANGED => {
+    "changed": true,
+    "path": "/tmp/hello.txt",
+    "state": "absent"
+}
+jenkins_host | CHANGED => {
+    "changed": true,
+    "path": "/tmp/hello.txt",
+    "state": "absent"
+}
+
+
+#load something from internet on all hosts
+ansible all -m get_url "url=https://link dest=/home" -b
+
+#install epel-repo on all hosts
+ubuntu1-1804@ansible_host:~/ansible$ ansible all_servers -m yum -a "name=epel-release state=installed" -b
+
+#install htop on all hosts
+ansible all_servers -m yum -a "name=htop state=installed" -b
+#remove thop on all hosts
+ansible all_servers -m yum -a "name=htop state=removed" -b
+
+#install web server on all hosts
+ansible all_servers -m yum -a "name=httpd state=latest" -b
+#start web server and enables it
+ansible all_servers -m service -a "name=httpd state=started enabled=yes" -b
+#removed web server
+ansible all_servers -m yum -a "name=httpd state=removed" -b
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
